@@ -23,11 +23,25 @@ const userRoutes = require('./routes/users');
 const authenticate = require('./middleware/auth');
 const loanRoutes = require('./routes/loans');
 const taskRoutes = require('./routes/tasks');
+const documentsRoutes = require('./routes/documents');
+const notificationsRoutes = require('./routes/notifications');
+const campaignsRoutes = require('./routes/campaigns');
+const communicationsRoutes = require('./routes/communications');
+const calendarRoutes = require('./routes/calendar');
+const marketingRoutes = require('./routes/marketing');
+const productionRoutes = require('./routes/production');
 
 app.use('/auth', authRoutes);
 app.use('/users', authenticate, userRoutes);
 app.use('/loans', authenticate, loanRoutes);
 app.use('/tasks', authenticate, taskRoutes);
+app.use('/documents', authenticate, documentsRoutes);
+app.use('/notifications', authenticate, notificationsRoutes);
+app.use('/campaigns', authenticate, campaignsRoutes);
+app.use('/communications', authenticate, communicationsRoutes);
+app.use('/calendar', authenticate, calendarRoutes);
+app.use('/marketing', authenticate, marketingRoutes);
+app.use('/production', authenticate, productionRoutes);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running.' });
