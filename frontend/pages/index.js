@@ -1,1 +1,2 @@
-import App from '../App';\nexport default App;
+import App from '../App';
+export default App;
