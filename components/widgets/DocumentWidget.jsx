@@ -1,52 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Progress } from '../ui/progress'
 import { FileText, Upload, AlertCircle, CheckCircle, Clock, Filter } from 'lucide-react'
+import { fetchDocuments } from './api';
 
-export function DocumentWidget() {
-  const mockDocuments = [
-    {
-      id: '1',
-      loanNumber: 'LN-2024-001',
-      borrowerName: 'John Smith',
-      documentType: 'W-2 Forms (2022-2023)',
-      status: 'missing',
-      ageInDays: 5,
-      loanStage: 'Application',
-      priority: 'high'
-    },
-    {
-      id: '2',
-      loanNumber: 'LN-2024-002',
-      borrowerName: 'Robert Johnson',
-      documentType: 'Bank Statements (3 months)',
-      status: 'pending',
-      ageInDays: 2,
-      loanStage: 'Processing',
-      priority: 'medium'
-    },
-    {
-      id: '3',
-      loanNumber: 'LN-2024-003',
-      borrowerName: 'Maria Garcia',
-      documentType: 'Property Insurance',
-      status: 'received',
-      ageInDays: 1,
-      loanStage: 'Underwriting',
-      priority: 'low'
-    },
-    {
-      id: '4',
-      loanNumber: 'LN-2024-004',
-      borrowerName: 'David Wilson',
-      documentType: 'Appraisal Report',
-      status: 'expired',
-      ageInDays: 12,
-      loanStage: 'Processing',
-      priority: 'high'
-    }
-  ]
+export function DocumentWidget({ token }) {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchDocuments(token)
+      .then(data => {
+        setDocuments(data.documents || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load documents');
+        setLoading(false);
+      });
+  }, [token]);
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -88,7 +64,15 @@ export function DocumentWidget() {
     }
   }
 
-  const completionRate = Math.round((mockDocuments.filter(doc => doc.status === 'received').length / mockDocuments.length) * 100)
+  const completionRate = documents.length > 0 ? Math.round((documents.filter(doc => doc.status === 'received').length / documents.length) * 100) : 0;
+
+  if (loading) {
+    return <div className="text-center py-8">Loading documents...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   return (
     <Card className="h-full">
@@ -114,7 +98,7 @@ export function DocumentWidget() {
           <div className="text-center p-3 bg-muted rounded-lg">
             <AlertCircle className="h-5 w-5 mx-auto mb-1 text-red-500" />
             <p className="text-sm text-muted-foreground">Overdue</p>
-            <p className="text-lg">{mockDocuments.filter(doc => doc.ageInDays > 7).length}</p>
+            <p className="text-lg">{documents.filter(doc => doc.ageInDays > 7).length}</p>
           </div>
         </div>
 
@@ -129,7 +113,7 @@ export function DocumentWidget() {
 
         {/* Document List */}
         <div className="space-y-3">
-          {mockDocuments.map(doc => (
+          {documents.map(doc => (
             <div key={doc.id} className={`border-l-4 ${getPriorityColor(doc.priority)} pl-3 py-2 border rounded-r-lg`}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">

@@ -1,47 +1,36 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Mail, MessageSquare, Phone, Users, Reply, Clock } from 'lucide-react'
+import { fetchCommunications } from './api';
 
-export function CommunicationWidget() {
-  const mockCommunications = [
-    {
-      id: '1',
-      type: 'email',
-      contact: 'john.smith@email.com',
-      subject: 'Question about closing costs',
-      time: '2 hours ago',
-      status: 'unread',
-      priority: 'high'
-    },
-    {
-      id: '2',
-      type: 'text',
-      contact: 'Robert Johnson',
-      subject: 'Documents uploaded',
-      time: '3 hours ago',
-      status: 'replied',
-      priority: 'medium'
-    },
-    {
-      id: '3',
-      type: 'voicemail',
-      contact: 'Maria Garcia',
-      subject: 'Rate lock question',
-      time: '5 hours ago',
-      status: 'pending',
-      priority: 'high'
-    },
-    {
-      id: '4',
-      type: 'call',
-      contact: 'David Wilson',
-      subject: 'Missed call',
-      time: '1 day ago',
-      status: 'missed',
-      priority: 'medium'
-    }
-  ]
+export function CommunicationWidget({ token }) {
+  const [communications, setCommunications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchCommunications(token)
+      .then(data => {
+        setCommunications(data.communications || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load communications');
+        setLoading(false);
+      });
+  }, [token]);
+
+  // Remove mockCommunications, use communications from state
+  if (loading) {
+    return <div className="text-center py-8">Loading communications...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   const getCommunicationIcon = (type) => {
     switch (type) {
@@ -111,7 +100,7 @@ export function CommunicationWidget() {
 
         {/* Communication List */}
         <div className="space-y-3">
-          {mockCommunications.map(comm => (
+          {communications.map(comm => (
             <div key={comm.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
               <div className="flex-shrink-0 mt-1">
                 {getCommunicationIcon(comm.type)}

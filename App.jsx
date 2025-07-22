@@ -5,45 +5,35 @@ import { LOADashboard } from './components/dashboards/LOADashboard'
 import { ProductionPartnerDashboard } from './components/dashboards/ProductionPartnerDashboard'
 import { Button } from './components/ui/button'
 
-export type UserRole = 'LO' | 'LOA' | 'Production Partner'
-
-export interface User {
-  id: string
-  name: string
-  email: string
-  primaryRole: UserRole
-  permissions: UserRole[]
-}
-
 export default function App() {
-  const [currentRole, setCurrentRole] = useState<UserRole>('LOA')
-  
+  const [currentRole, setCurrentRole] = useState('LOA')
+  // Placeholder JWT token; replace with real token from login
+  const jwtToken = 'demo-token'
   // Mock user with multiple role permissions
-  const user: User = {
+  const user = {
     id: '1',
     name: 'Olivia Wilson',
     email: 'olivia.wilson@company.com',
     primaryRole: 'LOA',
-    permissions: ['LO', 'LOA', 'Production Partner'] // User can access all dashboards
+    permissions: ['LO', 'LOA', 'Production Partner']
   }
 
   const renderDashboard = () => {
     switch (currentRole) {
       case 'LO':
-        return <LODashboard />
+        return <LODashboard token={jwtToken} role={currentRole} />
       case 'LOA':
-        return <LOADashboard />
+        return <LOADashboard token={jwtToken} role={currentRole} />
       case 'Production Partner':
-        return <ProductionPartnerDashboard />
+        return <ProductionPartnerDashboard token={jwtToken} role={currentRole} />
       default:
-        return <LOADashboard />
+        return <LOADashboard token={jwtToken} role={currentRole} />
     }
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Header user={user} />
-      
       {/* Navigation Tabs */}
       <div className="border-b bg-white px-6">
         <div className="flex space-x-1">
@@ -60,7 +50,6 @@ export default function App() {
           ))}
         </div>
       </div>
-
       <main className="overflow-auto">
         <div className="p-6">
           <div className="mb-6">

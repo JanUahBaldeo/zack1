@@ -2,14 +2,7 @@ import { Button } from './ui/button'
 import { Search, ChevronDown } from 'lucide-react'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
-interface HeaderProps {
-  user: {
-    name: string
-    email: string
-  }
-}
-
-export function Header({ user }: HeaderProps) {
+export function Header({ user }) {
   return (
     <header className="bg-[#2DD4BF] text-white px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
       {/* Left side - Profile and Welcome */}

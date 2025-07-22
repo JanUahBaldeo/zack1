@@ -1,37 +1,47 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import { Badge } from '../ui/badge'
 import { TrendingUp, TrendingDown, MousePointer, Eye, Users } from 'lucide-react'
+import { fetchPerformance } from './api';
 
-export function PerformanceWidget() {
-  const mockPerformanceData = [
-    { date: '2024-02-10', clicks: 245, ctr: 4.2, leads: 18, conversions: 3 },
-    { date: '2024-02-11', clicks: 312, ctr: 4.8, leads: 23, conversions: 4 },
-    { date: '2024-02-12', clicks: 189, ctr: 3.9, leads: 14, conversions: 2 },
-    { date: '2024-02-13', clicks: 267, ctr: 5.1, leads: 19, conversions: 5 },
-    { date: '2024-02-14', clicks: 298, ctr: 4.6, leads: 21, conversions: 3 },
-    { date: '2024-02-15', clicks: 334, ctr: 5.3, leads: 26, conversions: 6 },
-    { date: '2024-02-16', clicks: 389, ctr: 4.9, leads: 28, conversions: 4 }
-  ]
+export function PerformanceWidget({ token }) {
+  const [performance, setPerformance] = useState({ data: [], topPerformers: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const topPerformers = [
-    { name: 'XYZ Home Warranty', score: 92, leads: 34, ctr: 6.2 },
-    { name: 'ABC Title Co.', score: 88, leads: 28, ctr: 5.8 },
-    { name: 'QuickRate Pro', score: 85, leads: 25, ctr: 5.4 },
-    { name: 'HomeShield Insurance', score: 82, leads: 22, ctr: 4.9 }
-  ]
+  useEffect(() => {
+    setLoading(true);
+    fetchPerformance(token)
+      .then(data => {
+        setPerformance(data || { data: [], topPerformers: [] });
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load performance data');
+        setLoading(false);
+      });
+  }, [token]);
 
   const currentWeekTotals = {
-    clicks: mockPerformanceData.reduce((sum, day) => sum + day.clicks, 0),
-    avgCtr: mockPerformanceData.reduce((sum, day) => sum + day.ctr, 0) / mockPerformanceData.length,
-    leads: mockPerformanceData.reduce((sum, day) => sum + day.leads, 0),
-    conversions: mockPerformanceData.reduce((sum, day) => sum + day.conversions, 0)
+    clicks: performance.data.reduce((sum, day) => sum + (day.clicks || 0), 0),
+    avgCtr: performance.data.length > 0 ? performance.data.reduce((sum, day) => sum + (day.ctr || 0), 0) / performance.data.length : 0,
+    leads: performance.data.reduce((sum, day) => sum + (day.leads || 0), 0),
+    conversions: performance.data.reduce((sum, day) => sum + (day.conversions || 0), 0)
   }
 
   const getScoreColor = (score) => {
     if (score >= 90) return 'bg-green-100 text-green-800'
     if (score >= 80) return 'bg-yellow-100 text-yellow-800'
     return 'bg-red-100 text-red-800'
+  }
+
+  if (loading) {
+    return <div className="text-center py-8">Loading performance data...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
   }
 
   return (
@@ -58,7 +68,7 @@ export function PerformanceWidget() {
         <div className="h-48">
           <h4 className="text-sm text-muted-foreground mb-2">7-Day Click Trend</h4>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={mockPerformanceData}>
+            <LineChart data={performance.data}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="date" 
@@ -84,7 +94,7 @@ export function PerformanceWidget() {
         {/* Top Performers */}
         <div className="space-y-3">
           <h4 className="text-sm text-muted-foreground">Top Performing Partners</h4>
-          {topPerformers.map((partner, index) => (
+          {performance.topPerformers.map((partner, index) => (
             <div key={partner.name} className="flex items-center justify-between p-2 border rounded">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs">

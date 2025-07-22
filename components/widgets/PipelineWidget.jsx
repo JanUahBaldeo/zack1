@@ -1,103 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Progress } from '../ui/progress'
 import { MoreHorizontal, Plus, Filter, Calendar, DollarSign, User, Clock, ChevronDown } from 'lucide-react'
+import { fetchPipeline } from './api';
 
-export function PipelineWidget({ role }) {
-  const mockPipeline = [
-    {
-      id: '1',
-      borrowerName: 'John Smith',
-      loanNumber: 'LN-2024-001',
-      propertyAddress: '123 Main St',
-      loanType: 'Conventional',
-      loanAmount: 450000,
-      targetCloseDate: '2024-02-15',
-      currentStage: 'New Lead',
-      timeInStage: '2 days',
-      status: 'on-track',
-      loanOfficer: 'Mike Wilson',
-      processor: 'Sarah Johnson',
-      progress: 15
-    },
-    {
-      id: '2',
-      borrowerName: 'Robert Johnson',
-      loanNumber: 'LN-2024-002',
-      propertyAddress: '456 Oak Ave',
-      loanType: 'FHA',
-      loanAmount: 320000,
-      targetCloseDate: '2024-02-20',
-      currentStage: 'Contacted',
-      timeInStage: '5 days',
-      status: 'on-track',
-      loanOfficer: 'Lisa Davis',
-      processor: 'Tom Anderson',
-      progress: 25
-    },
-    {
-      id: '3',
-      borrowerName: 'Maria Garcia',
-      loanNumber: 'LN-2024-003',
-      propertyAddress: '789 Pine Rd',
-      loanType: 'VA',
-      loanAmount: 380000,
-      targetCloseDate: '2024-02-10',
-      currentStage: 'Application Started',
-      timeInStage: '8 days',
-      status: 'delayed',
-      loanOfficer: 'Current User',
-      processor: 'Current User',
-      progress: 45
-    },
-    {
-      id: '4',
-      borrowerName: 'David Wilson',
-      loanNumber: 'LN-2024-004',
-      propertyAddress: '321 Cedar St',
-      loanType: 'Jumbo',
-      loanAmount: 750000,
-      targetCloseDate: '2024-02-25',
-      currentStage: 'Pre-Approved',
-      timeInStage: '12 days',
-      status: 'at-risk',
-      loanOfficer: 'Mike Wilson',
-      processor: 'Sarah Johnson',
-      progress: 65
-    },
-    {
-      id: '5',
-      borrowerName: 'Jennifer Lee',
-      loanNumber: 'LN-2024-005',
-      propertyAddress: '555 Elm St',
-      loanType: 'Conventional',
-      loanAmount: 425000,
-      targetCloseDate: '2024-02-28',
-      currentStage: 'In Underwriting',
-      timeInStage: '6 days',
-      status: 'on-track',
-      loanOfficer: 'Lisa Davis',
-      processor: 'Tom Anderson',
-      progress: 80
-    },
-    {
-      id: '6',
-      borrowerName: 'Michael Brown',
-      loanNumber: 'LN-2024-006',
-      propertyAddress: '888 Maple Ave',
-      loanType: 'FHA',
-      loanAmount: 285000,
-      targetCloseDate: '2024-03-05',
-      currentStage: 'Closed',
-      timeInStage: '1 day',
-      status: 'on-track',
-      loanOfficer: 'Current User',
-      processor: 'Sarah Johnson',
-      progress: 100
-    }
-  ]
+export function PipelineWidget({ role, token }) {
+  const [pipeline, setPipeline] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchPipeline(token)
+      .then(data => {
+        setPipeline(data.loans || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load pipeline');
+        setLoading(false);
+      });
+  }, [token]);
 
   const stages = role === 'LO' ? [
     { name: 'New Lead', color: 'bg-teal-500', textColor: 'text-white' },
@@ -146,11 +72,19 @@ export function PipelineWidget({ role }) {
   }
 
   const getLoansForStage = (stageName) => {
-    return mockPipeline.filter(loan => loan.currentStage === stageName)
+    return pipeline.filter(loan => loan.currentStage === stageName)
   }
 
   const getTotalValue = (loans) => {
     return loans.reduce((sum, loan) => sum + loan.loanAmount, 0)
+  }
+
+  if (loading) {
+    return <div className="text-center py-8">Loading pipeline...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
   }
 
   return (
@@ -287,11 +221,11 @@ export function PipelineWidget({ role }) {
           <div className="grid grid-cols-4 gap-4 text-sm">
             <div className="text-center">
               <p className="text-muted-foreground">Total Pipeline</p>
-              <p className="font-medium">{mockPipeline.length} loans</p>
+              <p className="font-medium">{pipeline.length} loans</p>
             </div>
             <div className="text-center">
               <p className="text-muted-foreground">Total Value</p>
-              <p className="font-medium">{formatCurrency(mockPipeline.reduce((sum, item) => sum + item.loanAmount, 0))}</p>
+              <p className="font-medium">{formatCurrency(pipeline.reduce((sum, item) => sum + item.loanAmount, 0))}</p>
             </div>
             <div className="text-center">
               <p className="text-muted-foreground">Avg. Time</p>

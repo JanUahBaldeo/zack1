@@ -1,68 +1,38 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Checkbox } from '../ui/checkbox'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
-import { useState } from 'react'
+import { fetchCalendarEvents } from './api';
 
-interface CalendarWidgetProps {
-  role: 'LO' | 'LOA' | 'Production Partner'
-}
-
-interface CalendarEvent {
-  id: string
-  title: string
-  category: string
-  date: string
-  time: string
-  color: string
-}
-
-interface FilterCategory {
-  name: string
-  color: string
-  enabled: boolean
-}
-
-export function CalendarWidget({ role }: CalendarWidgetProps) {
-  const [currentDate, setCurrentDate] = useState(new Date(2017, 9, 1)) // October 2017 to match the image
-  const [view, setView] = useState<'week' | 'month'>('week')
-  
-  const [filterCategories, setFilterCategories] = useState<FilterCategory[]>([
+export function CalendarWidget({ role, token }) {
+  const [currentDate, setCurrentDate] = useState(new Date(2017, 9, 1)); // October 2017 to match the image
+  const [view, setView] = useState('week');
+  const [filterCategories, setFilterCategories] = useState([
     { name: 'Contact', color: '#3b82f6', enabled: true },
     { name: 'Blog', color: '#ef4444', enabled: true },
     { name: 'Email', color: '#10b981', enabled: true },
     { name: 'Marketing email', color: '#f59e0b', enabled: true },
     { name: 'Landing page', color: '#8b5cf6', enabled: true },
     { name: 'Social', color: '#06b6d4', enabled: true }
-  ])
+  ]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const events: CalendarEvent[] = [
-    {
-      id: '1',
-      title: 'Design Pricing',
-      category: 'Contact',
-      date: '2017-10-12',
-      time: '10:00 AM',
-      color: '#f59e0b'
-    },
-    {
-      id: '2',
-      title: 'Hi Tim to organize the call',
-      category: 'Email',
-      date: '2017-10-20',
-      time: '2:00 PM',
-      color: '#06b6d4'
-    },
-    {
-      id: '3',
-      title: 'October activities',
-      category: 'Marketing email',
-      date: '2017-10-23',
-      time: '9:00 AM',
-      color: '#f59e0b'
-    }
-  ]
+  useEffect(() => {
+    setLoading(true);
+    fetchCalendarEvents(token)
+      .then(data => {
+        setEvents(data.events || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load calendar events');
+        setLoading(false);
+      });
+  }, [token]);
 
   const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const monthNames = [
@@ -70,7 +40,7 @@ export function CalendarWidget({ role }: CalendarWidgetProps) {
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
 
-  const toggleCategory = (categoryName: string) => {
+  const toggleCategory = (categoryName) => {
     setFilterCategories(prev => 
       prev.map(cat => 
         cat.name === categoryName 
@@ -80,7 +50,7 @@ export function CalendarWidget({ role }: CalendarWidgetProps) {
     )
   }
 
-  const getDaysInMonth = (date: Date) => {
+  const getDaysInMonth = (date) => {
     const year = date.getFullYear()
     const month = date.getMonth()
     const firstDay = new Date(year, month, 1)
@@ -103,7 +73,7 @@ export function CalendarWidget({ role }: CalendarWidgetProps) {
     return days
   }
 
-  const getWeekDays = (date: Date) => {
+  const getWeekDays = (date) => {
     const startOfWeek = new Date(date)
     const day = startOfWeek.getDay()
     startOfWeek.setDate(startOfWeek.getDate() - day)
@@ -118,18 +88,18 @@ export function CalendarWidget({ role }: CalendarWidgetProps) {
     return days
   }
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date) => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
   }
 
-  const getEventsForDate = (date: string) => {
+  const getEventsForDate = (date) => {
     return events.filter(event => 
       event.date === date && 
       filterCategories.find(cat => cat.name === event.category)?.enabled
     )
   }
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateMonth = (direction) => {
     const newDate = new Date(currentDate)
     if (direction === 'prev') {
       newDate.setMonth(newDate.getMonth() - 1)
@@ -141,6 +111,14 @@ export function CalendarWidget({ role }: CalendarWidgetProps) {
 
   const miniCalendarDays = getDaysInMonth(currentDate)
   const weekDaysToShow = view === 'week' ? getWeekDays(currentDate) : null
+
+  if (loading) {
+    return <div className="text-center py-8">Loading calendar events...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   return (
     <Card className="h-full">

@@ -1,58 +1,33 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Progress } from '../ui/progress'
 import { Users, TrendingUp, Clock, Filter, Eye, MousePointer } from 'lucide-react'
+import { fetchLeadAnalytics } from './api';
 
-export function LeadAnalyticsWidget() {
-  const mockLeadSources = [
-    {
-      id: '1',
-      name: 'Facebook Ads',
-      leads: 87,
-      qualified: 34,
-      cost: 1240,
-      conversionRate: 39.1,
-      status: 'active',
-      timeStale: 2
-    },
-    {
-      id: '2',
-      name: 'Google Ads',
-      leads: 65,
-      qualified: 28,
-      cost: 1580,
-      cost: 1580,
-      conversionRate: 43.1,
-      status: 'active',
-      timeStale: 1
-    },
-    {
-      id: '3',
-      name: 'Referral Program',
-      leads: 42,
-      qualified: 31,
-      cost: 420,
-      conversionRate: 73.8,
-      status: 'active',
-      timeStale: 0
-    },
-    {
-      id: '4',
-      name: 'Email Campaign',
-      leads: 156,
-      qualified: 45,
-      cost: 200,
-      conversionRate: 28.8,
-      status: 'paused',
-      timeStale: 5
-    }
-  ]
+export function LeadAnalyticsWidget({ token }) {
+  const [leadSources, setLeadSources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const totalLeads = mockLeadSources.reduce((sum, source) => sum + source.leads, 0)
-  const totalQualified = mockLeadSources.reduce((sum, source) => sum + source.qualified, 0)
-  const totalCost = mockLeadSources.reduce((sum, source) => sum + source.cost, 0)
-  const avgConversionRate = (totalQualified / totalLeads) * 100
+  useEffect(() => {
+    setLoading(true);
+    fetchLeadAnalytics(token)
+      .then(data => {
+        setLeadSources(data.leadSources || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load lead analytics');
+        setLoading(false);
+      });
+  }, [token]);
+
+  const totalLeads = leadSources.reduce((sum, source) => sum + source.leads, 0)
+  const totalQualified = leadSources.reduce((sum, source) => sum + source.qualified, 0)
+  const totalCost = leadSources.reduce((sum, source) => sum + source.cost, 0)
+  const avgConversionRate = totalLeads > 0 ? (totalQualified / totalLeads) * 100 : 0
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -81,6 +56,14 @@ export function LeadAnalyticsWidget() {
 
   const getCostPerLead = (cost, leads) => {
     return leads > 0 ? formatCurrency(cost / leads) : '$0'
+  }
+
+  if (loading) {
+    return <div className="text-center py-8">Loading lead analytics...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
   }
 
   return (
@@ -123,7 +106,7 @@ export function LeadAnalyticsWidget() {
         {/* Lead Sources */}
         <div className="space-y-3">
           <h4 className="text-sm text-muted-foreground">Lead Sources</h4>
-          {mockLeadSources.map(source => (
+          {leadSources.map(source => (
             <div key={source.id} className="border rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">

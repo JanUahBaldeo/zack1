@@ -1,68 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Checkbox } from '../ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Plus, Filter, Phone, Mail, Calendar, FileText, AlertTriangle, Clock } from 'lucide-react'
+import { fetchTasks } from './api';
 
-export function TaskWidget({ role }) {
-  const mockTasks = [
-    {
-      id: '1',
-      title: 'Call John Smith - Missing W2',
-      priority: 'high',
-      type: 'call',
-      status: 'overdue',
-      assignee: 'Sarah Johnson',
-      loanOfficer: 'Mike Wilson',
-      dueDate: 'Yesterday',
-      timeInStatus: '2 days'
-    },
-    {
-      id: '2',
-      title: 'Order appraisal - 123 Main St',
-      priority: 'high',
-      type: 'document',
-      status: 'overdue',
-      assignee: 'Current User',
-      loanOfficer: 'Mike Wilson',
-      dueDate: '2 days ago',
-      timeInStatus: '3 days'
-    },
-    {
-      id: '3',
-      title: 'Email pre-approval letter',
-      priority: 'medium',
-      type: 'email',
-      status: 'today',
-      assignee: 'Current User',
-      loanOfficer: 'Lisa Davis',
-      dueDate: 'Today',
-      timeInStatus: '1 day'
-    },
-    {
-      id: '4',
-      title: 'Follow up on rate lock',
-      priority: 'medium',
-      type: 'follow-up',
-      status: 'today',
-      assignee: 'Current User',
-      loanOfficer: 'Current User',
-      dueDate: 'Today',
-      timeInStatus: '4 hours'
-    },
-    {
-      id: '5',
-      title: 'Schedule closing meeting',
-      priority: 'low',
-      type: 'meeting',
-      status: 'upcoming',
-      assignee: 'Current User',
-      loanOfficer: 'Current User',
-      dueDate: 'Tomorrow',
-      timeInStatus: '1 day'
-    }
-  ]
+export function TaskWidget({ role, token }) {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchTasks(token)
+      .then(data => {
+        setTasks(data.tasks || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load tasks');
+        setLoading(false);
+      });
+  }, [token]);
 
   const getTaskIcon = (type) => {
     switch (type) {
@@ -95,9 +56,17 @@ export function TaskWidget({ role }) {
   }
 
   // Group tasks by status
-  const overdueTasks = mockTasks.filter(task => task.status === 'overdue')
-  const todayTasks = mockTasks.filter(task => task.status === 'today')
-  const upcomingTasks = mockTasks.filter(task => task.status === 'upcoming')
+  const overdueTasks = tasks.filter(task => task.status === 'overdue')
+  const todayTasks = tasks.filter(task => task.status === 'today')
+  const upcomingTasks = tasks.filter(task => task.status === 'upcoming')
+
+  if (loading) {
+    return <div className="text-center py-8">Loading tasks...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   return (
     <Card className="h-full">

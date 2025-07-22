@@ -1,61 +1,27 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Bell, AlertCircle, Info, CheckCircle, X, Settings } from 'lucide-react'
+import { fetchNotifications } from './api';
 
-export function NotificationWidget() {
-  const mockNotifications = [
-    {
-      id: '1',
-      type: 'alert',
-      title: 'Workflow Failed',
-      message: 'Email automation workflow failed for LN-2024-001',
-      timestamp: '10 minutes ago',
-      isRead: false,
-      priority: 'high',
-      actionRequired: true
-    },
-    {
-      id: '2',
-      type: 'warning',
-      title: 'Rate Lock Expiring',
-      message: 'Rate lock expires in 24 hours for Garcia loan',
-      timestamp: '2 hours ago',
-      isRead: false,
-      priority: 'high',
-      actionRequired: true
-    },
-    {
-      id: '3',
-      type: 'info',
-      title: 'Document Received',
-      message: 'W-2 forms received for Johnson application',
-      timestamp: '4 hours ago',
-      isRead: true,
-      priority: 'medium',
-      actionRequired: false
-    },
-    {
-      id: '4',
-      type: 'success',
-      title: 'Loan Approved',
-      message: 'Conditional approval received for LN-2024-002',
-      timestamp: '1 day ago',
-      isRead: true,
-      priority: 'low',
-      actionRequired: false
-    },
-    {
-      id: '5',
-      type: 'warning',
-      title: 'Missing Documentation',
-      message: 'Bank statements missing for 3+ days - Smith loan',
-      timestamp: '1 day ago',
-      isRead: false,
-      priority: 'medium',
-      actionRequired: true
-    }
-  ]
+export function NotificationWidget({ token }) {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchNotifications(token)
+      .then(data => {
+        setNotifications(data.notifications || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load notifications');
+        setLoading(false);
+      });
+  }, [token]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -83,8 +49,16 @@ export function NotificationWidget() {
     }
   }
 
-  const unreadCount = mockNotifications.filter(n => !n.isRead).length
-  const actionRequiredCount = mockNotifications.filter(n => n.actionRequired).length
+  const unreadCount = notifications.filter(n => !n.isRead).length
+  const actionRequiredCount = notifications.filter(n => n.actionRequired).length
+
+  if (loading) {
+    return <div className="text-center py-8">Loading notifications...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   return (
     <Card className="h-full">
@@ -116,7 +90,7 @@ export function NotificationWidget() {
 
         {/* Notification List */}
         <div className="space-y-3">
-          {mockNotifications.map(notification => (
+          {notifications.map(notification => (
             <div key={notification.id} className={`border rounded-lg p-3 ${!notification.isRead ? 'bg-blue-50 border-blue-200' : ''}`}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center space-x-2">

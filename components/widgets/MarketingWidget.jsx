@@ -1,38 +1,36 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Progress } from '../ui/progress'
 import { TrendingUp, Mail, MousePointer, Users, Eye } from 'lucide-react'
+import { fetchMarketingMetrics } from './api';
 
-export function MarketingWidget() {
-  const mockCampaigns = [
-    {
-      id: '1',
-      name: 'February Rate Drop Alert',
-      type: 'email',
-      openRate: 24.5,
-      clickRate: 4.2,
-      leads: 18,
-      status: 'active'
-    },
-    {
-      id: '2',
-      name: 'First-Time Buyer Program',
-      type: 'social',
-      openRate: 18.3,
-      clickRate: 6.1,
-      leads: 12,
-      status: 'active'
-    },
-    {
-      id: '3',
-      name: 'Refinance Opportunities',
-      type: 'email',
-      openRate: 31.2,
-      clickRate: 8.4,
-      leads: 25,
-      status: 'completed'
-    }
-  ]
+export function MarketingWidget({ token }) {
+  const [metrics, setMetrics] = useState({ campaigns: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchMarketingMetrics(token)
+      .then(data => {
+        setMetrics(data || { campaigns: [] });
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load marketing metrics');
+        setLoading(false);
+      });
+  }, [token]);
+
+  // Remove mockCampaigns, use metrics.campaigns from state
+  if (loading) {
+    return <div className="text-center py-8">Loading marketing metrics...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
 
   const getCampaignIcon = (type) => {
     switch (type) {
@@ -86,7 +84,7 @@ export function MarketingWidget() {
         {/* Campaign List */}
         <div className="space-y-3">
           <h4 className="text-sm text-muted-foreground">Recent Campaigns</h4>
-          {mockCampaigns.map(campaign => (
+          {metrics.campaigns.map(campaign => (
             <div key={campaign.id} className="border rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
