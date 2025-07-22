@@ -42,8 +42,8 @@ const productionRoutes = require('./routes/production');
 
 app.use('/auth', authRoutes);
 app.use('/api/users', authenticate, userRoutes);
-app.use('/api/loans', authenticate, loanRoutes);
-app.use('/api/tasks', authenticate, taskRoutes);
+app.use('/api/loans', loanRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/campaigns', campaignsRoutes);
