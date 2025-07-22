@@ -1,42 +1,22 @@
 {
-  "name": "mortgage-dashboard-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Backend API for Mortgage Dashboard System",
-  "main": "src/server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node start-dev.js",
-    "dev": "nodemon start-dev.js",
-    "server": "node src/server.js",
-    "test-api": "node test-api.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "prisma:reset": "prisma migrate reset",
-    "setup": "npm install && npm run prisma:generate",
-    "test": "node test-api.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "express": "^4.18.2",
+    "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "helmet": "^7.0.0",
-    "dotenv": "^16.3.1",
-    "bcryptjs": "^2.4.3",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "express-validator": "^7.0.1",
-    "express-rate-limit": "^6.10.0",
-    "@prisma/client": "^5.3.1",
-    "axios": "^1.5.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.4",
-    "socket.io": "^4.7.2",
-    "uuid": "^9.0.0",
-    "date-fns": "^2.30.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1",
-    "prisma": "^5.3.1"
-  },
-  "engines": {
-    "node": ">=16.0.0"
+    "mongoose": "^8.16.4"
   }
 }

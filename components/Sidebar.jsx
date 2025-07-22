@@ -1,6 +1,7 @@
-import { Button } from './ui/button.jsx'
-import { Badge } from './ui/badge.jsx'
-import { Separator } from './ui/separator.jsx'
+import { Button } from './ui/button'
+import { Badge } from './ui/badge'
+import { Separator } from './ui/separator'
+import { User, UserRole } from '../App'
 import { 
   Home, 
   Users, 
@@ -14,7 +15,13 @@ import {
   ExternalLink
 } from 'lucide-react'
 
-export function Sidebar({ user, currentRole, onRoleChange }) {
+interface SidebarProps {
+  user: User
+  currentRole: UserRole
+  onRoleChange: (role: UserRole) => void
+}
+
+export function Sidebar({ user, currentRole, onRoleChange }: SidebarProps) {
   const navigationItems = [
     { icon: Home, label: 'Dashboard', href: '#' },
     { icon: CheckSquare, label: 'Tasks', href: '#' },

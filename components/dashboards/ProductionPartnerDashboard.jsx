@@ -144,7 +144,7 @@ export function ProductionPartnerDashboard() {
     }
   ]
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Active':
         return <Badge className="bg-green-500 text-white">Active</Badge>

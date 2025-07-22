@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Button } from '../ui/button.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Checkbox } from '../ui/checkbox.jsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
+import { Checkbox } from '../ui/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Plus, Filter, Phone, Mail, Calendar, FileText, AlertTriangle, Clock } from 'lucide-react'
 
 export function TaskWidget({ role }) {

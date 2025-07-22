@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
-import { Badge } from '../ui/badge.jsx'
+import { Badge } from '../ui/badge'
 import { TrendingUp, TrendingDown, MousePointer, Eye, Users } from 'lucide-react'
 
 export function PerformanceWidget() {

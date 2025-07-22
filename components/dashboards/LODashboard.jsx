@@ -1,12 +1,12 @@
-import { PipelineWidget } from '../widgets/PipelineWidget.jsx'
-import { TaskWidget } from '../widgets/TaskWidget.jsx'
-import { CalendarWidget } from '../widgets/CalendarWidget.jsx'
-import { MarketingWidget } from '../widgets/MarketingWidget.jsx'
-import { PerformanceWidget } from '../widgets/PerformanceWidget.jsx'
-import { LeadAnalyticsWidget } from '../widgets/LeadAnalyticsWidget.jsx'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Button } from '../ui/button.jsx'
+import { PipelineWidget } from '../widgets/PipelineWidget'
+import { TaskWidget } from '../widgets/TaskWidget'
+import { CalendarWidget } from '../widgets/CalendarWidget'
+import { MarketingWidget } from '../widgets/MarketingWidget'
+import { PerformanceWidget } from '../widgets/PerformanceWidget'
+import { LeadAnalyticsWidget } from '../widgets/LeadAnalyticsWidget'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import { TrendingUp, TrendingDown, ArrowUpRight, Filter } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 
@@ -87,7 +87,7 @@ export function LODashboard() {
     }
   ]
 
-  const getPriorityColor = (priority) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent': return 'bg-red-500 text-white'
       case 'high': return 'bg-orange-500 text-white'

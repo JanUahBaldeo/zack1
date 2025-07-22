@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Progress } from '../ui/progress.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Progress } from '../ui/progress'
 import { TrendingUp, Mail, MousePointer, Users, Eye } from 'lucide-react'
 
 export function MarketingWidget() {

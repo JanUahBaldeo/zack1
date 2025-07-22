@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Button } from '../ui/button.jsx'
-import { Progress } from '../ui/progress.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Progress } from '../ui/progress'
 import { Users, TrendingUp, Clock, Filter, Eye, MousePointer } from 'lucide-react'
 
 export function LeadAnalyticsWidget() {
@@ -21,6 +21,7 @@ export function LeadAnalyticsWidget() {
       name: 'Google Ads',
       leads: 65,
       qualified: 28,
+      cost: 1580,
       cost: 1580,
       conversionRate: 43.1,
       status: 'active',

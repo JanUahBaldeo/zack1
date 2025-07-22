@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
 export function QuickStatsWidget({ title, value, change, trend }) {

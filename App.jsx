@@ -1,19 +1,29 @@
 import { useState } from 'react'
-import { Header } from './components/Header.jsx'
-import { LODashboard } from './components/dashboards/LODashboard.jsx'
-import { LOADashboard } from './components/dashboards/LOADashboard.jsx'
-import { ProductionPartnerDashboard } from './components/dashboards/ProductionPartnerDashboard.jsx'
+import { Header } from './components/Header'
+import { LODashboard } from './components/dashboards/LODashboard'
+import { LOADashboard } from './components/dashboards/LOADashboard'
+import { ProductionPartnerDashboard } from './components/dashboards/ProductionPartnerDashboard'
 import { Button } from './components/ui/button'
 
+export type UserRole = 'LO' | 'LOA' | 'Production Partner'
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  primaryRole: UserRole
+  permissions: UserRole[]
+}
+
 export default function App() {
-  const [currentRole, setCurrentRole] = useState('Production Partner')
+  const [currentRole, setCurrentRole] = useState<UserRole>('LOA')
   
   // Mock user with multiple role permissions
-  const user = {
+  const user: User = {
     id: '1',
     name: 'Olivia Wilson',
     email: 'olivia.wilson@company.com',
-    primaryRole: 'Production Partner',
+    primaryRole: 'LOA',
     permissions: ['LO', 'LOA', 'Production Partner'] // User can access all dashboards
   }
 
@@ -26,7 +36,7 @@ export default function App() {
       case 'Production Partner':
         return <ProductionPartnerDashboard />
       default:
-        return <ProductionPartnerDashboard />
+        return <LOADashboard />
     }
   }
 

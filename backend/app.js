@@ -1,0 +1,39 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected')).catch(err => console.error('MongoDB error:', err));
+
+// Models
+const User = require('./models/User');
+const Loan = require('./models/Loan');
+const Task = require('./models/Task');
+
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const authenticate = require('./middleware/auth');
+const loanRoutes = require('./routes/loans');
+const taskRoutes = require('./routes/tasks');
+
+app.use('/auth', authRoutes);
+app.use('/users', authenticate, userRoutes);
+app.use('/loans', authenticate, loanRoutes);
+app.use('/tasks', authenticate, taskRoutes);
+
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running.' });
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
+}); 

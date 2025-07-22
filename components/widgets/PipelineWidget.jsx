@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Button } from '../ui/button.jsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select.jsx'
-import { Progress } from '../ui/progress.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Progress } from '../ui/progress'
 import { MoreHorizontal, Plus, Filter, Calendar, DollarSign, User, Clock, ChevronDown } from 'lucide-react'
 
 export function PipelineWidget({ role }) {
@@ -205,7 +205,7 @@ export function PipelineWidget({ role }) {
                 {/* Stage Content */}
                 <div className="bg-gray-50 rounded-b-lg min-h-96 p-3 space-y-3 border border-t-0">
                   {stageLoans.map((loan) => (
-                    <Card key={loan.id} className="bg-white hover:shadow-md transition-shadow cursor-pointer kanban-card">
+                    <Card key={loan.id} className="bg-white hover:shadow-md transition-shadow cursor-pointer">
                       <CardContent className="p-4">
                         <div className="space-y-3">
                           {/* Loan Header */}

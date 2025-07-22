@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card.jsx'
-import { Badge } from '../ui/badge.jsx'
-import { Button } from '../ui/button.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import { Bell, AlertCircle, Info, CheckCircle, X, Settings } from 'lucide-react'
 
 export function NotificationWidget() {
