@@ -1,7 +1,9 @@
 // API utility for widgets
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function fetchPipeline(token) {
-  const res = await fetch('/api/loans/pipeline', {
+  const res = await fetch(`${API_URL}/api/loans/pipeline`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch pipeline');
@@ -10,7 +12,7 @@ export async function fetchPipeline(token) {
 
 export async function fetchTasks(token, params = {}) {
   const query = new URLSearchParams(params).toString();
-  const res = await fetch(`/api/tasks${query ? '?' + query : ''}`, {
+  const res = await fetch(`${API_URL}/api/tasks${query ? '?' + query : ''}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch tasks');
@@ -18,7 +20,7 @@ export async function fetchTasks(token, params = {}) {
 }
 
 export async function fetchNotifications(token) {
-  const res = await fetch('/api/notifications', {
+  const res = await fetch(`${API_URL}/api/notifications`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -26,7 +28,7 @@ export async function fetchNotifications(token) {
 }
 
 export async function fetchCalendarEvents(token) {
-  const res = await fetch('/api/calendar/events', {
+  const res = await fetch(`${API_URL}/api/calendar/events`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch calendar events');
@@ -34,7 +36,7 @@ export async function fetchCalendarEvents(token) {
 }
 
 export async function fetchDocuments(token) {
-  const res = await fetch('/api/documents/checklist', {
+  const res = await fetch(`${API_URL}/api/documents/checklist`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch documents');
@@ -42,7 +44,7 @@ export async function fetchDocuments(token) {
 }
 
 export async function fetchCampaigns(token) {
-  const res = await fetch('/api/campaigns', {
+  const res = await fetch(`${API_URL}/api/campaigns`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch campaigns');
@@ -50,7 +52,7 @@ export async function fetchCampaigns(token) {
 }
 
 export async function fetchCommunications(token) {
-  const res = await fetch('/api/communications', {
+  const res = await fetch(`${API_URL}/api/communications`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch communications');
@@ -58,7 +60,7 @@ export async function fetchCommunications(token) {
 }
 
 export async function fetchLeadAnalytics(token) {
-  const res = await fetch('/api/marketing/lead-analytics', {
+  const res = await fetch(`${API_URL}/api/marketing/lead-analytics`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch lead analytics');
@@ -66,7 +68,7 @@ export async function fetchLeadAnalytics(token) {
 }
 
 export async function fetchMarketingMetrics(token) {
-  const res = await fetch('/api/marketing/metrics', {
+  const res = await fetch(`${API_URL}/api/marketing/metrics`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch marketing metrics');
@@ -74,7 +76,7 @@ export async function fetchMarketingMetrics(token) {
 }
 
 export async function fetchPerformance(token) {
-  const res = await fetch('/api/production/overview', {
+  const res = await fetch(`${API_URL}/api/production/overview`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch performance data');
