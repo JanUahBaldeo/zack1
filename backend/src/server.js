@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -14,12 +15,12 @@ const notificationRoutes = require('./routes/notifications');
 const appointmentRoutes = require('./routes/appointments');
 const dashboardRoutes = require('./routes/dashboard');
 const leadRoutes = require('./routes/leads');
+const leadDirectRoutes = require('./routes/leads-direct');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { authMiddleware } = require('./middleware/auth');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet());
@@ -38,6 +39,24 @@ app.use(limiter);
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Pretty-print JSON in development mode
+if (process.env.NODE_ENV === 'development') {
+  app.set('json spaces', 2);
+}
+
+// Root route - redirect to API info
+app.get('/', (req, res) => {
+  res.redirect('/api');
+});
+
+// Favicon route
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/favicon.svg'));
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -63,7 +82,8 @@ app.get('/api', (req, res) => {
       notifications: '/api/notifications',
       appointments: '/api/appointments',
       dashboard: '/api/dashboard',
-      leads: '/api/leads'
+      leads: '/api/leads',
+      leadsDirectAccess: '/api/leads-direct/direct/:contactId'
     },
     docs: 'Visit /health for server status'
   });
@@ -80,6 +100,7 @@ app.use('/api/notifications', authMiddleware, notificationRoutes);
 app.use('/api/appointments', authMiddleware, appointmentRoutes);
 app.use('/api/dashboard', authMiddleware, dashboardRoutes);
 app.use('/api/leads', authMiddleware, leadRoutes);
+app.use('/api/leads-direct', leadDirectRoutes); // No auth middleware for direct access
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -98,7 +119,8 @@ app.use('*', (req, res) => {
       '/api/notifications/*',
       '/api/appointments/*',
       '/api/dashboard/*',
-      '/api/leads/*'
+      '/api/leads/*',
+      '/api/leads-direct/direct/:contactId'
     ]
   });
 });
@@ -107,6 +129,7 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 // Start server
+const PORT = process.env.PORT || 3003; // Changed port from 3002 to 3003
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Dashboard API: http://localhost:${PORT}/api`);
