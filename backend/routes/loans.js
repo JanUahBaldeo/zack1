@@ -45,4 +45,18 @@ router.delete('/:id', async (req, res) => {
   res.json({ message: 'Loan deleted' });
 });
 
+// GET /loans/pipeline - return placeholder pipeline data
+router.get('/pipeline', (req, res) => {
+  res.json({
+    pipeline: [
+      { id: 1, stage: 'New Lead', count: 5 },
+      { id: 2, stage: 'Contacted', count: 3 },
+      { id: 3, stage: 'Application Started', count: 2 },
+      { id: 4, stage: 'Pre-Approved', count: 1 },
+      { id: 5, stage: 'In Underwriting', count: 0 },
+      { id: 6, stage: 'Closed', count: 0 }
+    ]
+  });
+});
+
 module.exports = router; 
