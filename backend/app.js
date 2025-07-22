@@ -32,16 +32,16 @@ const marketingRoutes = require('./routes/marketing');
 const productionRoutes = require('./routes/production');
 
 app.use('/auth', authRoutes);
-app.use('/users', authenticate, userRoutes);
-app.use('/loans', authenticate, loanRoutes);
-app.use('/tasks', authenticate, taskRoutes);
-app.use('/documents', authenticate, documentsRoutes);
-app.use('/notifications', authenticate, notificationsRoutes);
-app.use('/campaigns', authenticate, campaignsRoutes);
-app.use('/communications', authenticate, communicationsRoutes);
-app.use('/calendar', authenticate, calendarRoutes);
-app.use('/marketing', authenticate, marketingRoutes);
-app.use('/production', authenticate, productionRoutes);
+app.use('/api/users', authenticate, userRoutes);
+app.use('/api/loans', authenticate, loanRoutes);
+app.use('/api/tasks', authenticate, taskRoutes);
+app.use('/api/documents', authenticate, documentsRoutes);
+app.use('/api/notifications', authenticate, notificationsRoutes);
+app.use('/api/campaigns', authenticate, campaignsRoutes);
+app.use('/api/communications', authenticate, communicationsRoutes);
+app.use('/api/calendar', authenticate, calendarRoutes);
+app.use('/api/marketing', authenticate, marketingRoutes);
+app.use('/api/production', authenticate, productionRoutes);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running.' });
