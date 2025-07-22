@@ -4,7 +4,16 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'https://zack1-w5ox.vercel.app',
+    'http://localhost:3000'
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB connection
