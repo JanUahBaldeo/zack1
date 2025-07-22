@@ -35,13 +35,13 @@ app.use('/auth', authRoutes);
 app.use('/api/users', authenticate, userRoutes);
 app.use('/api/loans', authenticate, loanRoutes);
 app.use('/api/tasks', authenticate, taskRoutes);
-app.use('/api/documents', authenticate, documentsRoutes);
-app.use('/api/notifications', authenticate, notificationsRoutes);
-app.use('/api/campaigns', authenticate, campaignsRoutes);
-app.use('/api/communications', authenticate, communicationsRoutes);
-app.use('/api/calendar', authenticate, calendarRoutes);
-app.use('/api/marketing', authenticate, marketingRoutes);
-app.use('/api/production', authenticate, productionRoutes);
+app.use('/api/documents', documentsRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/campaigns', campaignsRoutes);
+app.use('/api/communications', communicationsRoutes);
+app.use('/api/calendar', calendarRoutes);
+app.use('/api/marketing', marketingRoutes);
+app.use('/api/production', productionRoutes);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running.' });
