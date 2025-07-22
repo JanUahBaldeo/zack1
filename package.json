@@ -1,0 +1,28 @@
+{
+  "name": "dashboard-system-(copy)-(3)",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanUahBaldeo/zack1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JanUahBaldeo/zack1/issues"
+  },
+  "homepage": "https://github.com/JanUahBaldeo/zack1#readme",
+  "dependencies": {
+    "next": "^15.4.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}
